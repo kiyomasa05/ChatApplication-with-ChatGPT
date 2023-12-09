@@ -1,4 +1,5 @@
 import React from "react";
+import { RiLogoutBoxLine } from "react-icons/ri";
 
 const Sidebar = () => {
   return (
@@ -22,6 +23,10 @@ const Sidebar = () => {
             Room1
           </li>
         </ul>
+      </div>
+      <div className="text-xl flex items-center justify-evenly mb-3 cursor-pointer p-4 text-slate-100 hover:bg-slate-700 duration-150">
+        <RiLogoutBoxLine />
+        <span>ログアウト</span>
       </div>
     </div>
   );
