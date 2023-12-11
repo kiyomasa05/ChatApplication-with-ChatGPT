@@ -1,5 +1,13 @@
+"use client"
+
 import { onAuthStateChanged, User } from "firebase/auth";
-import React, { createContext, ReactNode, useEffect, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { auth } from "../../firebase";
 
 type AppProviderProps = {
@@ -36,6 +44,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
   useEffect(() => {
+    // firebaseのonAuthStateChanged関数でuser情報を管理
     // DOCS:https://firebase.google.com/docs/auth/web/manage-users?hl=ja
     const unsubscribe = onAuthStateChanged(auth, (newUser) => {
       setUser(newUser);
@@ -60,4 +69,9 @@ export function AppProvider({ children }: AppProviderProps) {
       {children}
     </AppContext.Provider>
   );
+}
+
+// 各コンポーネントでuseContext(appContext)せずに済むように
+export function useAppContext() {
+  return useContext(AppContext);
 }
