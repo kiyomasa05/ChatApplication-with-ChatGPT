@@ -6,7 +6,7 @@ import {
   orderBy,
   query,
   Timestamp,
-  where
+  where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
@@ -37,7 +37,7 @@ const Sidebar = () => {
 
       // リアルタイムで反映させるためonsnapを取得
       // DOCS:https://firebase.google.com/docs/firestore/query-data/listen?hl=ja
-      const unsbscribe = onSnapshot(q, (snapshot: any) => {
+      const unsubscribe = onSnapshot(q, (snapshot: any) => {
         const newRooms = snapshot.docs.map((doc) => ({
           id: doc.id, //doc.idはコレクションのidのこと
           // ...（スプレット構文）にすることでid以外のプロパティも取得可能
@@ -45,6 +45,9 @@ const Sidebar = () => {
         }));
         setRooms(newRooms);
       });
+      return () => {
+        unsubscribe();
+      };
     };
 
     fetchRooms();

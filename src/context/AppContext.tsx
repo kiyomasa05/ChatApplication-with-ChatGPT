@@ -37,11 +37,15 @@ export function AppProvider({ children }: AppProviderProps) {
 
   useEffect(() => {
     // DOCS:https://firebase.google.com/docs/auth/web/manage-users?hl=ja
-    onAuthStateChanged(auth, (newUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (newUser) => {
       setUser(newUser);
       setUserId(newUser ? newUser.uid : null);
     });
-  })
+    // unsubscribeとすることでuser状態を常に監視している状態からアンマウントしたらストップするようにメモリリークを防ぐ
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   return (
     <AppContext.Provider
