@@ -8,10 +8,12 @@ import {
   query,
   Timestamp,
   where,
+  serverTimestamp,
+  addDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
-import { db } from "../../../firebase";
+import { auth, db } from "../../../firebase";
 
 type Room = {
   id: string;
@@ -20,7 +22,7 @@ type Room = {
 };
 
 const Sidebar = () => {
-  const { user, userId,setSelectedRoom } = useAppContext();
+  const { user, userId, setSelectedRoom } = useAppContext();
 
   const [rooms, setRooms] = useState<Room[]>([]);
 
@@ -57,13 +59,32 @@ const Sidebar = () => {
     }
   }, [userId]);
 
-  const selectRoom = (roomId:string) => {
+  const selectRoom = (roomId: string) => {
     setSelectedRoom(roomId);
-  }
+  };
+
+  const addNewRoom = async () => {
+    const roomName = prompt("ルーム名を入力してください");
+    if (roomName) {
+      const newRoomRef = collection(db, "rooms");
+      await addDoc(newRoomRef, {
+        name: roomName,
+        userId: userId,
+        createdAt: serverTimestamp(),
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    auth.signOut();
+  };
   return (
     <div className="bg-custom-blue h-full overflow-y-auto px-5 flex flex-col">
       <div className="flex-grow">
-        <div className="cursol-pointer flex justify-evenly items-center border mt-2 rounded-md hover:bg-blue-800 duration-150">
+        <div
+          onClick={addNewRoom}
+          className="cursol-pointer flex justify-evenly items-center border mt-2 rounded-md hover:bg-blue-800 duration-150"
+        >
           <span className="text-white p-4 text-2xl">+</span>
           <h1 className="text-white text-xl font-semibold p-4">new chat</h1>
         </div>
@@ -72,7 +93,7 @@ const Sidebar = () => {
             <li
               key={room.id}
               className="cursol-ponter border-b p-4 text-slate-100 hover:bg-slate-700 duration-150"
-              onClick={()=>selectRoom(room.id)}
+              onClick={() => selectRoom(room.id)}
             >
               {room.name}
             </li>
@@ -88,7 +109,10 @@ const Sidebar = () => {
           </li> */}
         </ul>
       </div>
-      <div className="text-xl flex items-center justify-evenly mb-3 cursor-pointer p-4 text-slate-100 hover:bg-slate-700 duration-150">
+      <div
+        className="text-xl flex items-center justify-evenly mb-3 cursor-pointer p-4 text-slate-100 hover:bg-slate-700 duration-150"
+        onClick={handleLogout}
+      >
         <RiLogoutBoxLine />
         <span>ログアウト</span>
       </div>
