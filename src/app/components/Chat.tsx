@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { useAppContext } from "@/context/AppContext";
+import OpenAI from "openai";
 
 type Message = {
   text: string;
@@ -22,6 +23,10 @@ type Message = {
 };
 
 const Chat = () => {
+  const openai = new OpenAI({
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
+    dangerouslyAllowBrowser: true,
+  });
   const { selectedRoom } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message>([]);
