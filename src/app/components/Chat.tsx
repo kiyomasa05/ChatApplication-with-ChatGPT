@@ -15,6 +15,7 @@ import {
 import { db } from "../../../firebase";
 import { useAppContext } from "@/context/AppContext";
 import OpenAI from "openai";
+import LoadingIcons from "react-loading-icons";
 
 type Message = {
   text: string;
@@ -30,6 +31,7 @@ const Chat = () => {
   const { selectedRoom } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 各Roomにおけるメッセージを取得
   useEffect(() => {
@@ -59,6 +61,7 @@ const Chat = () => {
     // 部屋が選択された時に実行するように
   }, [selectedRoom]);
 
+  // messageを送る
   const sendMessage = async () => {
     //入力値が無ければ返す
     if (!inputMessage.trim()) return;
@@ -72,10 +75,30 @@ const Chat = () => {
     // メッセージをfirestoreに保存する
     // Docs:https://firebase.google.com/docs/firestore/manage-data/add-data?hl=ja
     // roomを取得
-    const roomDocRef = doc(db, "rooms", "2aeFeGBzHNdRw1kfdofg");
+    const roomDocRef = doc(db, "rooms", selectedRoom!);
     // collectionを取得
     const messageCollectionRef = collection(roomDocRef, "messages");
     await addDoc(messageCollectionRef, messageData);
+
+    setInputMessage("");
+    setIsLoading(true);
+
+    //openAIからの返信
+    // Docs:https://platform.openai.com/docs/guides/text-generation/chat-completions-api
+    const gpt3Response = await openai.chat.completions.create({
+      messages: [{ role: "user", content: inputMessage }],
+      model: "gpt-3.5-turbo",
+    });
+
+    setIsLoading(false);
+    // responseの配列からメッセージを取り出す
+    const botResponse = gpt3Response.choices[0].message.content;
+    // firebaseにresponseを書き込む
+    await addDoc(messageCollectionRef, {
+      text: botResponse,
+      sender: "bot",
+      createdAt: serverTimestamp(),
+    });
   };
   return (
     <div className="bg-gray-500 h-full p-4 flex flex-col">
@@ -97,6 +120,7 @@ const Chat = () => {
             </div>
           </div>
         ))}
+        {isLoading && <LoadingIcons.SpinningCircles />}
       </div>
       <div className="flex-shrink-0 relative">
         <input
@@ -104,6 +128,13 @@ const Chat = () => {
           placeholder="Send a Message"
           className="border-2 rounded w-full pr-10 focus:outline-none p-2"
           onChange={(e) => setInputMessage(e.target.value)}
+          value={inputMessage}
+          // enterでも送信する
+          onKeyDown={(e) => {
+            if (e.key === "enter") {
+              sendMessage();
+            }
+          }}
         />
         <button
           className="absolute inset-y-0 right-4 flex items-center"
