@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa6";
 import {
   Timestamp,
@@ -14,6 +14,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase";
 import { useAppContext } from "@/context/AppContext";
+import OpenAI from "openai";
+import LoadingIcons from "react-loading-icons";
 
 type Message = {
   text: string;
@@ -22,9 +24,16 @@ type Message = {
 };
 
 const Chat = () => {
-  const { selectedRoom } = useAppContext();
+  const openai = new OpenAI({
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
+    dangerouslyAllowBrowser: true,
+  });
+  const { selectedRoom, selectedRoomName } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const scrollDiv = useRef<HTMLDivElement>(null);
 
   // 各Roomにおけるメッセージを取得
   useEffect(() => {
@@ -54,6 +63,17 @@ const Chat = () => {
     // 部屋が選択された時に実行するように
   }, [selectedRoom]);
 
+  useEffect(() => {
+    if (scrollDiv.current) {
+      const element = scrollDiv.current;
+      element.scrollTo({
+        top: element.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
+
+  // messageを送る
   const sendMessage = async () => {
     //入力値が無ければ返す
     if (!inputMessage.trim()) return;
@@ -67,15 +87,37 @@ const Chat = () => {
     // メッセージをfirestoreに保存する
     // Docs:https://firebase.google.com/docs/firestore/manage-data/add-data?hl=ja
     // roomを取得
-    const roomDocRef = doc(db, "rooms", "2aeFeGBzHNdRw1kfdofg");
+    const roomDocRef = doc(db, "rooms", selectedRoom!);
     // collectionを取得
     const messageCollectionRef = collection(roomDocRef, "messages");
     await addDoc(messageCollectionRef, messageData);
+
+    setInputMessage("");
+    setIsLoading(true);
+
+    //openAIからの返信
+    // Docs:https://platform.openai.com/docs/guides/text-generation/chat-completions-api
+    const gpt3Response = await openai.chat.completions.create({
+      messages: [{ role: "user", content: inputMessage }],
+      model: "gpt-3.5-turbo",
+    });
+
+    setIsLoading(false);
+    // responseの配列からメッセージを取り出す
+    const botResponse = gpt3Response.choices[0].message.content;
+    // firebaseにresponseを書き込む
+    await addDoc(messageCollectionRef, {
+      text: botResponse,
+      sender: "bot",
+      createdAt: serverTimestamp(),
+    });
   };
   return (
     <div className="bg-gray-500 h-full p-4 flex flex-col">
-      <h1 className="text-2xl text-white font-semibold mb-4">ROOM</h1>
-      <div className="flex-grow overflow-y-auto mb-4">
+      <h1 className="text-2xl text-white font-semibold mb-4">
+        {selectedRoomName}
+      </h1>
+      <div className="flex-grow overflow-y-auto mb-4" ref={scrollDiv}>
         {messages.map((message, index) => (
           <div
             key={index}
@@ -92,6 +134,7 @@ const Chat = () => {
             </div>
           </div>
         ))}
+        {isLoading && <LoadingIcons.SpinningCircles />}
       </div>
       <div className="flex-shrink-0 relative">
         <input
@@ -99,6 +142,13 @@ const Chat = () => {
           placeholder="Send a Message"
           className="border-2 rounded w-full pr-10 focus:outline-none p-2"
           onChange={(e) => setInputMessage(e.target.value)}
+          value={inputMessage}
+          // enterでも送信する
+          onKeyDown={(e) => {
+            if (e.key === "enter") {
+              sendMessage();
+            }
+          }}
         />
         <button
           className="absolute inset-y-0 right-4 flex items-center"
