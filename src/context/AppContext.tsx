@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { onAuthStateChanged, User } from "firebase/auth";
 import React, {
@@ -22,6 +22,8 @@ type AppContextType = {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   selectedRoom: string | null;
   setSelectedRoom: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedRoomName: string | null;
+  setSelectedRoomName: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 // デフォルト値を定義する 全て空
@@ -31,6 +33,8 @@ const defaultContextData = {
   setUser: () => {},
   selectedRoom: null,
   setSelectedRoom: () => {},
+  selectedRoomName: null,
+  setSelectedRoomName: () => {},
 };
 
 //引数にデフォルトの設定が必要
@@ -42,6 +46,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [selectedRoomName, setSelectedRoomName] = useState<string | null>(null);
 
   useEffect(() => {
     // firebaseのonAuthStateChanged関数でuser情報を管理
@@ -64,6 +69,8 @@ export function AppProvider({ children }: AppProviderProps) {
         setUser,
         selectedRoom,
         setSelectedRoom,
+        selectedRoomName,
+        setSelectedRoomName
       }}
     >
       {children}

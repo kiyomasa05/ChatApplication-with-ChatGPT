@@ -22,7 +22,7 @@ type Room = {
 };
 
 const Sidebar = () => {
-  const { user, userId, setSelectedRoom } = useAppContext();
+  const { user, userId, setSelectedRoom ,setSelectedRoomName} = useAppContext();
 
   const [rooms, setRooms] = useState<Room[]>([]);
 
@@ -59,8 +59,10 @@ const Sidebar = () => {
     }
   }, [userId]);
 
-  const selectRoom = (roomId: string) => {
+  const selectRoom = (roomId: string,roomName:string) => {
     setSelectedRoom(roomId);
+    setSelectedRoomName(roomName);
+
   };
 
   const addNewRoom = async () => {
@@ -93,7 +95,7 @@ const Sidebar = () => {
             <li
               key={room.id}
               className="cursol-ponter border-b p-4 text-slate-100 hover:bg-slate-700 duration-150"
-              onClick={() => selectRoom(room.id)}
+              onClick={() => selectRoom(room.id,room.name)}
             >
               {room.name}
             </li>
@@ -109,9 +111,14 @@ const Sidebar = () => {
           </li> */}
         </ul>
       </div>
+      {user && (
+        <div className="mb-2 p-4 text-slate-100 text-lg font-medium">
+          {user.email}
+        </div>
+      )}
       <div
         className="text-xl flex items-center justify-evenly mb-3 cursor-pointer p-4 text-slate-100 hover:bg-slate-700 duration-150"
-        onClick={handleLogout}
+        onClick={() => handleLogout()} //アロー関数でないとリロードするたびに呼び出される
       >
         <RiLogoutBoxLine />
         <span>ログアウト</span>

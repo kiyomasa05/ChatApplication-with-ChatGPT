@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa6";
 import {
   Timestamp,
@@ -28,10 +28,12 @@ const Chat = () => {
     apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
     dangerouslyAllowBrowser: true,
   });
-  const { selectedRoom } = useAppContext();
+  const { selectedRoom, selectedRoomName } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const scrollDiv = useRef<HTMLDivElement>(null);
 
   // 各Roomにおけるメッセージを取得
   useEffect(() => {
@@ -60,6 +62,16 @@ const Chat = () => {
     }
     // 部屋が選択された時に実行するように
   }, [selectedRoom]);
+
+  useEffect(() => {
+    if (scrollDiv.current) {
+      const element = scrollDiv.current;
+      element.scrollTo({
+        top: element.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
 
   // messageを送る
   const sendMessage = async () => {
@@ -102,8 +114,10 @@ const Chat = () => {
   };
   return (
     <div className="bg-gray-500 h-full p-4 flex flex-col">
-      <h1 className="text-2xl text-white font-semibold mb-4">ROOM</h1>
-      <div className="flex-grow overflow-y-auto mb-4">
+      <h1 className="text-2xl text-white font-semibold mb-4">
+        {selectedRoomName}
+      </h1>
+      <div className="flex-grow overflow-y-auto mb-4" ref={scrollDiv}>
         {messages.map((message, index) => (
           <div
             key={index}
