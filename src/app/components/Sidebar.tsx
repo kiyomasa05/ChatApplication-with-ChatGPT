@@ -44,7 +44,7 @@ const Sidebar = () => {
         // リアルタイムで反映させるためonsnapを取得
         // DOCS:https://firebase.google.com/docs/firestore/query-data/listen?hl=ja
         const unsubscribe = onSnapshot(q, (snapshot: any) => {
-          const newRooms = snapshot.docs.map((doc) => ({
+          const newRooms = snapshot.docs.map((doc:any) => ({
             id: doc.id, //doc.idはコレクションのidのこと
             // ...（スプレット構文）にすることでid以外のプロパティも取得可能
             ...doc.data(), // dataはフィールドに指定したcreatedAtやnameなどのこと
@@ -100,15 +100,6 @@ const Sidebar = () => {
               {room.name}
             </li>
           ))}
-          {/* <li className="cursol-ponter border-b p-4 text-slate-100 hover:bg-slate-700 duration-150">
-            Room1
-          </li>
-          <li className="cursol-ponter border-b p-4 text-slate-100 hover:bg-slate-700 duration-150">
-            Room1
-          </li>
-          <li className="cursol-ponter border-b p-4 text-slate-100 hover:bg-slate-700 duration-150">
-            Room1
-          </li> */}
         </ul>
       </div>
       {user && (

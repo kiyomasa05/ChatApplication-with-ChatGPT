@@ -26,7 +26,7 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await signInWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential) => {
+      .then((userCredential:any) => {
         const user = userCredential.user;
         router.push("/");
       })
@@ -42,14 +42,10 @@ const Login = () => {
   const googleLogin = async () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider)
-      .then((userCredential) => {
-        const credential =
-          GoogleAuthProvider.credentialFromResult(userCredential);
-        const token = credential.accessToken;
-        const user = userCredential.user;
+      .then(() => {
         router.push("/");
       })
-      .catch((error) => {
+      .catch((error:any) => {
         alert(error.message);
       });
   };
