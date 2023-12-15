@@ -22,7 +22,8 @@ type Room = {
 };
 
 const Sidebar = () => {
-  const { user, userId, setSelectedRoom ,setSelectedRoomName} = useAppContext();
+  const { user, userId, setSelectedRoom, setSelectedRoomName } =
+    useAppContext();
 
   const [rooms, setRooms] = useState<Room[]>([]);
 
@@ -44,7 +45,7 @@ const Sidebar = () => {
         // リアルタイムで反映させるためonsnapを取得
         // DOCS:https://firebase.google.com/docs/firestore/query-data/listen?hl=ja
         const unsubscribe = onSnapshot(q, (snapshot: any) => {
-          const newRooms = snapshot.docs.map((doc:any) => ({
+          const newRooms = snapshot.docs.map((doc: any) => ({
             id: doc.id, //doc.idはコレクションのidのこと
             // ...（スプレット構文）にすることでid以外のプロパティも取得可能
             ...doc.data(), // dataはフィールドに指定したcreatedAtやnameなどのこと
@@ -59,10 +60,9 @@ const Sidebar = () => {
     }
   }, [userId]);
 
-  const selectRoom = (roomId: string,roomName:string) => {
+  const selectRoom = (roomId: string, roomName: string) => {
     setSelectedRoom(roomId);
     setSelectedRoomName(roomName);
-
   };
 
   const addNewRoom = async () => {
@@ -95,15 +95,16 @@ const Sidebar = () => {
             <li
               key={room.id}
               className="cursol-ponter border-b p-4 text-slate-100 hover:bg-slate-700 duration-150"
-              onClick={() => selectRoom(room.id,room.name)}
+              onClick={() => selectRoom(room.id, room.name)}
             >
               {room.name}
             </li>
           ))}
         </ul>
       </div>
+
       {user && (
-        <div className="mb-2 p-4 text-slate-100 text-lg font-medium">
+        <div className="p-4 text-slate-100 text-lg font-medium">
           {user.email}
         </div>
       )}

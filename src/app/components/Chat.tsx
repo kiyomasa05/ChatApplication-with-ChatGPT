@@ -145,7 +145,7 @@ const Chat = () => {
           value={inputMessage}
           // enterでも送信する
           onKeyDown={(e) => {
-            if (e.key === "enter") {
+            if (e.key === "Enter") {
               sendMessage();
             }
           }}
