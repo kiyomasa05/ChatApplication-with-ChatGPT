@@ -9,6 +9,7 @@ import React, {
   useState,
 } from "react";
 import { auth } from "../../firebase";
+import { useRouter } from "../../node_modules/next/navigation";
 
 type AppProviderProps = {
   children: ReactNode;
@@ -47,6 +48,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
   const [selectedRoomName, setSelectedRoomName] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     // firebaseのonAuthStateChanged関数でuser情報を管理
@@ -54,6 +56,10 @@ export function AppProvider({ children }: AppProviderProps) {
     const unsubscribe = onAuthStateChanged(auth, (newUser) => {
       setUser(newUser);
       setUserId(newUser ? newUser.uid : null);
+
+      if (!newUser) {
+        router.push("/auth/login");
+      }
     });
     // unsubscribeとすることでuser状態を常に監視している状態からアンマウントしたらストップするようにメモリリークを防ぐ
     return () => {
@@ -70,7 +76,7 @@ export function AppProvider({ children }: AppProviderProps) {
         selectedRoom,
         setSelectedRoom,
         selectedRoomName,
-        setSelectedRoomName
+        setSelectedRoomName,
       }}
     >
       {children}

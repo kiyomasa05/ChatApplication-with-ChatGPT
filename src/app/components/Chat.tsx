@@ -30,7 +30,7 @@ const Chat = () => {
   });
   const { selectedRoom, selectedRoomName } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
-  const [messages, setMessages] = useState<Message>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const scrollDiv = useRef<HTMLDivElement>(null);
@@ -51,7 +51,7 @@ const Chat = () => {
         // リアルタイムで反映させるためonsnapを取得
         // DOCS:https://firebase.google.com/docs/firestore/query-data/listen?hl=ja
         const unsubscribe = onSnapshot(q, (snapshot: any) => {
-          const newMessages = snapshot.docs.map((doc) => doc.data() as Message);
+          const newMessages = snapshot.docs.map((doc:any) => doc.data() as Message);
           setMessages(newMessages);
         });
         return () => {
