@@ -1,15 +1,12 @@
 "use client";
 import {
   signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
 } from "firebase/auth";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { auth } from "../../../../firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 
 type Inputs = {
   email: string;
@@ -26,7 +23,7 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await signInWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential:any) => {
+      .then((userCredential: any) => {
         const user = userCredential.user;
         router.push("/");
       })
@@ -36,17 +33,6 @@ const Login = () => {
         } else {
           alert(error.message);
         }
-      });
-  };
-
-  const googleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider)
-      .then(() => {
-        router.push("/");
-      })
-      .catch((error:any) => {
-        alert(error.message);
       });
   };
 
@@ -106,20 +92,6 @@ const Login = () => {
           >
             ログイン
           </button>
-        </div>
-        <div className="mt-3 ">
-          <span className="text-sm text-gray-600">
-            googleアカウントでのログインはこちら
-          </span>
-          <Image
-            onClick={googleLogin}
-            className="cursor-pointer pt-2"
-            src="/web_neutral_sq_SI@1x.png"
-            alt="google_login_icon"
-            width={220}
-            height={250}
-            objectFit="contain"
-          />
         </div>
         <div className="mt-4">
           <span className="text-gray-600 text-sm">初めてのご利用はこちら</span>
