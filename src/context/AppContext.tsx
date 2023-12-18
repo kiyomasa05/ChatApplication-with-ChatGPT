@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 import { auth } from "../../firebase";
-import { useRouter } from "../../node_modules/next/navigation";
+import { useRouter } from "next/navigation";
 
 type AppProviderProps = {
   children: ReactNode;
