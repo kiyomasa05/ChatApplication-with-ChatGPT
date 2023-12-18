@@ -137,8 +137,7 @@ const Chat = () => {
         {isLoading && <LoadingIcons.SpinningCircles />}
       </div>
       <div className="flex-shrink-0 relative">
-        <input
-          type="text"
+        <textarea
           placeholder="Send a Message"
           className="border-2 rounded w-full pr-10 focus:outline-none p-2"
           onChange={(e) => setInputMessage(e.target.value)}
@@ -146,7 +145,9 @@ const Chat = () => {
           // enterでも送信する
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              sendMessage();
+              if (e.shiftKey) {
+                sendMessage();
+              }
             }
           }}
         />
@@ -156,6 +157,9 @@ const Chat = () => {
         >
           <FaPaperPlane />
         </button>
+      </div>
+      <div className="text-right">
+        <span className="text-white">Shift+Enterキーで送信できます。</span>
       </div>
     </div>
   );

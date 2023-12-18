@@ -65,7 +65,7 @@ export function AppProvider({ children }: AppProviderProps) {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [router, user]);
 
   return (
     <AppContext.Provider

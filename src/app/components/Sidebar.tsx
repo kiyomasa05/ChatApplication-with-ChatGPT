@@ -58,7 +58,7 @@ const Sidebar = () => {
       };
       fetchRooms();
     }
-  }, [userId]);
+  }, [user, userId]);
 
   const selectRoom = (roomId: string, roomName: string) => {
     setSelectedRoom(roomId);
