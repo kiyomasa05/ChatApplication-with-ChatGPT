@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
+import { FaRegStickyNote } from "react-icons/fa";
 import { auth, db } from "../../../firebase";
 
 type Room = {
@@ -82,6 +83,11 @@ const Sidebar = () => {
   };
   return (
     <div className="bg-custom-blue h-full overflow-y-auto px-5 flex flex-col">
+      <div className="pt-3 leading-3">
+        <span className="text-sm text-red-500 ">
+          部屋に入って(作成して)からチャットを開始してください
+        </span>
+      </div>
       <div className="flex-grow">
         <div
           onClick={addNewRoom}
