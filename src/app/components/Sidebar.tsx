@@ -13,7 +13,6 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
-import { FaRegStickyNote } from "react-icons/fa";
 import { auth, db } from "../../../firebase";
 
 type Room = {
