@@ -34,6 +34,15 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const scrollDiv = useRef<HTMLDivElement>(null);
+  const omikuzi = [
+    "ヤバめ（いい意味で）",
+    "This is a pen.を使う場面が訪れる",
+    "勢い'だけ'はある",
+    "モテ期近し",
+    "凶ではない",
+    "君より下はいるはず",
+    "大吉(仮)",
+  ];
 
   // 各Roomにおけるメッセージを取得
   useEffect(() => {
@@ -51,7 +60,9 @@ const Chat = () => {
         // リアルタイムで反映させるためonsnapを取得
         // DOCS:https://firebase.google.com/docs/firestore/query-data/listen?hl=ja
         const unsubscribe = onSnapshot(q, (snapshot: any) => {
-          const newMessages = snapshot.docs.map((doc:any) => doc.data() as Message);
+          const newMessages = snapshot.docs.map(
+            (doc: any) => doc.data() as Message
+          );
           setMessages(newMessages);
         });
         return () => {
@@ -108,6 +119,14 @@ const Chat = () => {
     // firebaseにresponseを書き込む
     await addDoc(messageCollectionRef, {
       text: botResponse,
+      sender: "bot",
+      createdAt: serverTimestamp(),
+    });
+    await addDoc(messageCollectionRef, {
+      text:
+        "おみくじ😆 : 「 " +
+        omikuzi[Math.floor(Math.random() * omikuzi.length)] +
+        " 」",
       sender: "bot",
       createdAt: serverTimestamp(),
     });
