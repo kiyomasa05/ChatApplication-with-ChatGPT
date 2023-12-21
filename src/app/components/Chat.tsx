@@ -43,10 +43,6 @@ const Chat = () => {
     "君より下はいるはず",
     "大吉(仮)",
   ];
-  const d = new Date()
-  console.log(new Date());
-  console.log(d);
-  console.log(new Date());
 
   // 各Roomにおけるメッセージを取得
   useEffect(() => {
