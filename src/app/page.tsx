@@ -17,23 +17,26 @@ export default function Home() {
 
   return (
     <div className="relative flex h-screen">
-      <div className="md:hidden fixed top-0 left-0 m-3">
-        <button
-          onClick={toggleSidebar}
-          className=""
-        >
-          <TfiAlignJustify size={"45px"} />
-        </button>
-      </div>
+      <button
+        onClick={toggleSidebar}
+        className="md:hidden fixed top-0 left-0 m-3"
+      >
+        <TfiAlignJustify size={"45px"} />
+      </button>
+
       {/* モバイル時には左側にサイドバーを表示 */}
       <div
         onClick={closeSidebar}
-        className={`md:hidden fixed inset-0 z-50 ${
-          isOpen ? "block" : "hidden"
+        className={`md:hidden fixed inset-0 z-50 transition-opacity ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
         <div className="bg-black opacity-50"></div>
-        <div className="absolute left-0 top-0 h-full w-4/5">
+        <div
+          className={`absolute left-0 top-0 h-full w-4/5 bg-white transition-transform ${
+            isOpen ? "transform translate-x-0" : "transform -translate-x-full"
+          }`}
+        >
           <Sidebar />
         </div>
       </div>
