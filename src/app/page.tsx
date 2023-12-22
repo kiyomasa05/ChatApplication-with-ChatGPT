@@ -19,7 +19,7 @@ export default function Home() {
     <div className="relative flex h-screen">
       <button
         onClick={toggleSidebar}
-        className="md:hidden fixed top-0 left-0 m-3"
+        className="md:hidden fixed top-0 left-0 m-3 bg-white"
       >
         <TfiAlignJustify size= {"45px"} />
       </button>
@@ -32,7 +32,7 @@ export default function Home() {
         }`}
       >
         <div className="bg-black opacity-50"></div>
-        <div className="absolute left-0 top-0 h-full w-4/5 bg-white">
+        <div className="absolute left-0 top-0 h-full w-4/5">
           <Sidebar />
         </div>
       </div>
