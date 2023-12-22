@@ -133,9 +133,19 @@ const Chat = () => {
   };
   return (
     <div className="bg-gray-500 h-full p-4 flex flex-col">
-      <h1 className="text-2xl text-white font-semibold mb-4">
-        {selectedRoomName}
-      </h1>
+      {selectedRoomName ? (
+        <h1 className="text-2xl text-white font-semibold mb-4 text-center ">
+          {selectedRoomName}
+        </h1>
+      ) : (
+        <div className="mb-4  font-semibold text-center">
+          <h2 className="text-xl text-white mb-3">部屋が選択されてません</h2>
+          <p className="text-sm text-rose-500">
+            部屋を選択してからチャットしてください
+          </p>
+        </div>
+      )}
+
       <div className="flex-grow overflow-y-auto mb-4" ref={scrollDiv}>
         {messages.map((message, index) => (
           <div
@@ -178,7 +188,7 @@ const Chat = () => {
         </button>
       </div>
       <div className="text-right">
-        <span className="text-white">Shift+Enterキーで送信できます。</span>
+        <span className="hidden md:block text-white">Shift+Enterキーで送信できます。</span>
       </div>
     </div>
   );
