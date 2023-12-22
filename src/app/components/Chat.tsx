@@ -188,7 +188,7 @@ const Chat = () => {
         </button>
       </div>
       <div className="text-right">
-        <span className="text-white">Shift+Enterキーで送信できます。</span>
+        <span className="hidden md:block text-white">Shift+Enterキーで送信できます。</span>
       </div>
     </div>
   );
