@@ -17,13 +17,14 @@ export default function Home() {
 
   return (
     <div className="relative flex h-screen">
-      <button
-        onClick={toggleSidebar}
-        className="md:hidden fixed top-0 left-0 m-3 bg-white"
-      >
-        <TfiAlignJustify size= {"45px"} />
-      </button>
-
+      <div className="md:hidden fixed top-0 left-0 m-3">
+        <button
+          onClick={toggleSidebar}
+          className=""
+        >
+          <TfiAlignJustify size={"45px"} />
+        </button>
+      </div>
       {/* モバイル時には左側にサイドバーを表示 */}
       <div
         onClick={closeSidebar}
